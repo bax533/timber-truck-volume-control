@@ -1,0 +1,8 @@
+
+namespace TimberControl
+{
+    class ImageHandler
+    {
+
+    }
+}
