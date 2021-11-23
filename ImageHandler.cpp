@@ -23,9 +23,7 @@ namespace TimberControl
 
         Sobel(src_gray, grad_x, ddepth, 1, 0, ksize, scale, delta, BORDER_DEFAULT);
         Sobel(src_gray, grad_y, ddepth, 0, 1, ksize, scale, delta, BORDER_DEFAULT);
-
-
-            
+     
         Mat grad_x_abs, grad_y_abs;
 
         convertScaleAbs(grad_x, grad_x_abs);
@@ -36,8 +34,12 @@ namespace TimberControl
 
         addWeighted(grad_x_abs, 0.5, grad_y_abs, 0.5, 0, grad_xy);
         
+        Canny(src_gray, grad_xy_thin, cannyLowThresh, cannyHighThresh, 3, false);
+    }
 
-
+    void PerformRussianMagic()
+    {
+        
     }
 
     void ImageHandler::showImage(imgNum img)
@@ -61,6 +63,11 @@ namespace TimberControl
 
             case n_grad_xy:
                 imshow (windowName, grad_xy);
+                waitKey(0);
+                break;
+
+            case n_grad_xy_thin:
+                imshow(windowName, grad_xy_thin);
                 waitKey(0);
                 break;
 

@@ -1,5 +1,7 @@
-#include "ImageHandler.hpp"
+#ifndef VOLUME_CALCULATOR_H
+#define VOLUME_CALCULATOR_H
 
+#include "ImageHandler.hpp"
 
 namespace TimberControl
 {
@@ -14,3 +16,5 @@ namespace TimberControl
         double Calculate();
   };
 }
+
+#endif

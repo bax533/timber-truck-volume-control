@@ -1,3 +1,6 @@
+#ifndef IMAGE_HANDLER_H
+#define IMAGE_HANDLER_H
+
 #include "opencv2/imgproc.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
@@ -20,7 +23,10 @@ namespace TimberControl
     class ImageHandler
     {
         Mat src, src_gray, grad_x, grad_y, grad_xy, grad_xy_thin;
+        Mat R, P;
         int ksize, scale, delta;
+        int cannyLowThresh = 100, cannyHighThresh = 200;
+        
     public:
         ImageHandler() = default;
         ImageHandler(const char* imgPath);
@@ -31,3 +37,5 @@ namespace TimberControl
         void showImage(imgNum img); 
     };
 }
+
+#endif
