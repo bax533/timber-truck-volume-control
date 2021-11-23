@@ -1,6 +1,8 @@
 CC = g++
 CFLAGS = -g -Wall
-SRCS = main.cpp VolumeCalculator.hpp VolumeCalculator.cpp
+SRCS = main.cpp VolumeCalculator.hpp VolumeCalculator.cpp \
+	   ImageHandler.hpp ImageHandler.cpp \
+	   Common.hpp
 PROG = VolumeControl
 
 OPENCV = `pkg-config opencv4 --cflags --libs`
