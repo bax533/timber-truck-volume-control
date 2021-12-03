@@ -4,6 +4,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
+#include <iostream>
 
 #include "Common.hpp"
 
@@ -26,15 +27,22 @@ namespace TimberControl
         Mat R, P;
         int ksize, scale, delta;
         int cannyLowThresh = 100, cannyHighThresh = 200;
-        
+
+        int rMin = 5, rMax = 75; 
+            
     public:
         ImageHandler() = default;
+        ImageHandler(const Mat& img);
         ImageHandler(const char* imgPath);
         ImageHandler(const char* imgPath, int ksize, int scale, int delta);
    
 
         void Prepare(); 
         void showImage(imgNum img); 
+
+        void PerformRussianMagic();
+        void FindBestCircle(std::pair<int, int> center);
+    
     };
 }
 

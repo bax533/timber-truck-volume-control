@@ -13,12 +13,19 @@ namespace TimberControl
 {
     using namespace cv;
 
+    const int maxR = 80, minR = 4;
+
     template <typename T>
     struct Vector
     {
         T x, y;
     };
 
+    struct Circle
+    {
+        std::pair<int, int> center;
+        int r;
+    };
 
     const String windowName = "window";
 
@@ -37,6 +44,18 @@ namespace TimberControl
     inline double AngleBetweenVectors(const Vector<int>& v,const Vector<int>& g)
     {
         return acos(Dot<int>(v, g)/Mag<int>(v)*Mag<int>(g));
+    }
+
+    inline bool InBounds(const std::pair<int, int>& p, const int& r, const int& width, const int& height)
+    {
+        return p.first - r >= 0 && p.first + r < height &&
+            p.second - r >= 0 && p.second + r < width;
+    }
+
+    inline bool InBounds(const std::pair<int, int>& p, const int& width, const int& height)
+    {
+        return p.first >= 0 && p.first < height &&
+            p.second >= 0 && p.second < width;
     }
 }
 
