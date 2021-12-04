@@ -25,19 +25,23 @@ namespace TimberControl
         //cvtColor(src, src_gray, COLOR_BGR2GRAY);
         src_gray = src;
         std::cout<<"c\n";
-        int ddepth = CV_16S;
+        int ddepth = CV_32F;
 
         Sobel(src_gray, grad_x, ddepth, 1, 0, ksize, scale, delta, BORDER_DEFAULT);
         Sobel(src_gray, grad_y, ddepth, 0, 1, ksize, scale, delta, BORDER_DEFAULT);
          std::cout<<"d\n";    
         Mat grad_x_abs, grad_y_abs;
 
+        phase(grad_x, grad_y, phase_img, true);
+
+        imshow("phase", phase_img);
+
         convertScaleAbs(grad_x, grad_x_abs);
         convertScaleAbs(grad_y, grad_y_abs);
                 std::cout<<"e\n";
-        grad_x = grad_x_abs;
-        grad_y = grad_y_abs;
-
+        //grad_x = grad_x_abs;
+        //grad_y = grad_y_abs;
+        
         addWeighted(grad_x_abs, 0.5, grad_y_abs, 0.5, 0, grad_xy);
         
         Canny(src_gray, grad_xy_thin, cannyLowThresh, cannyHighThresh, 3, false);
@@ -81,8 +85,9 @@ namespace TimberControl
         int width = grad_x.cols;
 
         Mat angleOk(Size(2*maxR, 2*maxR), CV_8U, Scalar(0));
-        for(int row = center.first - maxR; row <= center.first + maxR/2; row++)
-            for(int col = center.second - maxR; col <= center.second + maxR/2; col++)
+        for(int row = center.first - maxR; row <= center.first + maxR; row++)
+        {
+            for(int col = center.second - maxR; col <= center.second + maxR; col++)
             {
                 if(!InBounds({row, col}, width, height))
                     continue;
@@ -90,14 +95,19 @@ namespace TimberControl
                 Vector<int> gradAngle = {(int)grad_x.at<uchar>(row, col), (int)grad_y.at<uchar>(row, col)};
                 
                 float toCenter_th = atan2(toCenter.y, toCenter.x)*180/PI; 
-                float grad_th = 0;
+                float grad_th = phase_img.at<float>(row, col);
                 if(gradAngle.x != 0 && gradAngle.y != 0)
                     grad_th = atan2(gradAngle.y, gradAngle.x) * 180 / PI;
+               
+                if(toCenter_th < 0)
+                    toCenter_th = 360 + toCenter_th;
 
-                if(abs(AngleBetweenVectors(toCenter, gradAngle)) < 1)
+                if(abs(grad_th-toCenter_th) < 20)
                     angleOk.at<uchar>(row - center.first + maxR, col - center.second + maxR) = 255;
             }
-        imshow("dupa", angleOk);
+        }
+        imshow("org", src_gray);
+        imshow("ANGLE OKKKKs", angleOk);
         waitKey(0); 
     }
 

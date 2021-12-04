@@ -18,17 +18,18 @@ namespace TimberControl
         n_grad_x,
         n_grad_y,
         n_grad_xy,
-        n_grad_xy_thin
+        n_grad_xy_thin,
+        n_phase
     };
 
     class ImageHandler
     {
-        Mat src, src_gray, grad_x, grad_y, grad_xy, grad_xy_thin;
+        Mat src, src_gray, grad_x, grad_y, grad_xy, grad_xy_thin, phase_img;
         Mat R, P;
         int ksize, scale, delta;
         int cannyLowThresh = 100, cannyHighThresh = 200;
 
-        int rMin = 5, rMax = 75; 
+        //int rMin = 5, rMax = 75; 
             
     public:
         ImageHandler() = default;

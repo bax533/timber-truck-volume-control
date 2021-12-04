@@ -54,16 +54,13 @@ public:
 
         Mat testImg(Size(100, 100), CV_8U, Scalar(0));
         
-        circle(testImg, Point(49, 49), 40, Scalar(255));
-        std::cout<<"dupa\n";
+        circle(testImg, Point(49, 49), 20, Scalar(255));
         ImageHandler imgHandler(testImg);
-        std::cout<<"dupa1\n";
         imgHandler.Prepare();
-        std::cout<<"dupa2\n";
         //for(int i=48; i<=50; i++)
         //    for(int j =49; j<=50; j++)
               imgHandler.FindBestCircle({49, 49});
-        imshow("dupa", testImg);
+        //imshow("dupa", testImg);
         waitKey(0);
     }
 

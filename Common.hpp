@@ -13,7 +13,7 @@ namespace TimberControl
 {
     using namespace cv;
 
-    const int maxR = 80, minR = 4;
+    const int maxR = 30, minR = 4;
 
     template <typename T>
     struct Vector
