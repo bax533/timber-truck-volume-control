@@ -5,6 +5,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 
+#include <iostream>
 #include "math.h"
 
 #define PI 3.1415926535897932384
@@ -56,6 +57,22 @@ namespace TimberControl
     {
         return p.first >= 0 && p.first < height &&
             p.second >= 0 && p.second < width;
+    }
+
+    inline void getMaxAndPos(const Mat& m, int& maxVal, Point& p)
+    {
+        for(int row = 0; row < m.rows; row++)
+        {
+            for(int col = 0; col < m.cols; col++)
+            {
+                int curVal = (int)m.at<uchar>(row, col);
+                if(curVal > maxVal)
+                {
+                    p = Point(row, col);
+                    maxVal = curVal;
+                }
+            }
+        }
     }
 }
 

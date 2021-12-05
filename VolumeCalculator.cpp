@@ -15,7 +15,7 @@ namespace TimberControl
     {
         printf("%s\n", imgPath);
         
-        imageHandler.showImage(n_grad_xy_thin);
+        imageHandler.PerformRussianMagic();
         return 0.0;
     }
 }

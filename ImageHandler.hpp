@@ -25,7 +25,7 @@ namespace TimberControl
     class ImageHandler
     {
         Mat src, src_gray, grad_x, grad_y, grad_xy, grad_xy_thin, phase_img;
-        Mat R, P;
+        Mat R, N;
         int ksize, scale, delta;
         int cannyLowThresh = 100, cannyHighThresh = 200;
 
@@ -42,7 +42,7 @@ namespace TimberControl
         void showImage(imgNum img); 
 
         void PerformRussianMagic();
-        void FindBestCircle(std::pair<int, int> center);
+        void FindBestCircle(Point center);
     
     };
 }

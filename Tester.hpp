@@ -59,9 +59,8 @@ public:
         imgHandler.Prepare();
         //for(int i=48; i<=50; i++)
         //    for(int j =49; j<=50; j++)
-              imgHandler.FindBestCircle({49, 49});
+        imgHandler.FindBestCircle({49, 49});
         //imshow("dupa", testImg);
-        waitKey(0);
     }
 
     void showImg(cv::Mat img)
