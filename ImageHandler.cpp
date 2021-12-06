@@ -3,29 +3,25 @@ namespace TimberControl
 {
     ImageHandler::ImageHandler(const Mat& img)
         : src(img), ksize(1), scale(1), delta(0)
-    {
-        R = Mat(Size(src.rows, src.cols), CV_32SC1, Scalar(0)); 
-        N = Mat(Size(src.rows, src.cols), CV_32SC1, Scalar(0));
-    }
+    {}
 
     ImageHandler::ImageHandler(const char* imgPath)
         : ksize(1), scale(1), delta(0)
     {
         src = imread(imgPath);
-        R = Mat(Size(src.rows, src.cols), CV_32SC1, Scalar(0)); 
-        N = Mat(Size(src.rows, src.cols), CV_32SC1, Scalar(0));
     }
 
     ImageHandler::ImageHandler(const char* imgPath, int ksize, int scale, int delta)
         : ksize(ksize), scale(scale), delta(delta)
     {
         src = imread(imgPath, IMREAD_COLOR);
-        R = Mat(Size(src.rows, src.cols), CV_32SC1, Scalar(0)); 
-        N = Mat(Size(src.rows, src.cols), CV_32SC1, Scalar(0));
     }
 
     void ImageHandler::Prepare()
     {
+        R = Mat(Size(src.cols, src.rows), CV_32SC1, Scalar(0)); 
+        N = Mat(Size(src.cols, src.rows), CV_32SC1, Scalar(0));
+
         GaussianBlur(src, src, Size(3, 3), 0, 0, BORDER_DEFAULT);
         cvtColor(src, src_gray, COLOR_BGR2GRAY);
         //src_gray = src;
@@ -48,6 +44,15 @@ namespace TimberControl
         addWeighted(grad_x_abs, 0.5, grad_y_abs, 0.5, 0, grad_xy);
         
         Canny(src_gray, grad_xy_thin, cannyLowThresh, cannyHighThresh, 3, false);
+        
+        std::cout<<grad_x.rows<<" "<<grad_x.cols<<" grad_x\n";
+        std::cout<<src_gray.rows<<" "<<src_gray.cols<<" src_gray\n";
+        std::cout<<src.rows<<" "<<src.cols<<" src\n";
+        std::cout<<R.rows<<" "<<R.cols<<" R\n";
+
+
+
+        assert(src.rows == R.rows && src.cols == R.cols && src.rows == grad_x.rows && src.cols == grad_x.cols);
     }
 
     void ImageHandler::PerformRussianMagic()
@@ -56,51 +61,55 @@ namespace TimberControl
         int width = grad_x.cols;
         //int step = grad_x.step;
 
+        
+
         for(int row = 0; row < height; row++)
         {   
             for(int col = 0; col < width; col++)
             {
                 FindBestCircle(Point(row, col));
             }
-            std::cout<<(double)row/(double)height * 100.0<<"\n";
+            std::cout<<(double)row/(double)height * 100.0<<"%\n";
         }
 
         Mat resultImg = Mat::zeros(src_gray.rows, src_gray.cols, CV_8U);
-        int maxVal=-1;
+        double maxVal = -1.0;
         Point maxPoint;
-        getMaxAndPos(N, maxVal, maxPoint);
-        int curR = (int)R.at<uchar>(maxPoint.y, maxPoint.x);
+        getMaxAndPos(N, R, maxVal, maxPoint);
+        
+        std::cout<<"point max: "<<maxPoint.x<<" "<<maxPoint.y<<"\n";
+        int curR = (int)R.at<int>(maxPoint.y, maxPoint.x);
         
         std::cout<<maxVal<<"  <- maxVal  cur R -> "<<(int)curR<<"\n";
-        while((double)maxVal/(double)curR > 2.0)
+        while(maxVal > 0.8)
         {
-            //if(curR == 0)
-            //{
-                
-            //}
-            circle(resultImg, maxPoint, curR, Scalar(255), FILLED);
-            circle(R, maxPoint, curR, Scalar(0), FILLED);
-            getMaxAndPos(N, maxVal, maxPoint);
-            curR = (int)R.at<uchar>(maxPoint.x, maxPoint.y);
+            circle(resultImg, Point(maxPoint.y, maxPoint.x), curR, Scalar(255), FILLED);
+            circle(N, Point(maxPoint.y, maxPoint.x), curR, Scalar(0), FILLED);
+            getMaxAndPos(N, R, maxVal, maxPoint);
+            curR = R.at<int>(maxPoint.x, maxPoint.y);
+
+            std::cout<<maxVal<<" <- cur ratio\n";
+            std::cout<<curR<<" <-curR  Point-> "<<maxPoint.x<<", "<<maxPoint.y<<"  maxVal:"<<maxVal<<"\n";
         }
         imshow("kolkas", resultImg);
+        imshow("source", src_gray);
         waitKey(0);
     }   
 
-    void ImageHandler::FindBestCircle(Point center)
-    {
+    void ImageHandler::FindBestCircle(const Point& center_orig)
+    {//TODO adjust finding circle to image edges (currently finding on smaller img)
         int height = grad_x.rows;
         int width = grad_x.cols;
 
-        int rows_from = center.x - maxR < 0 ? 0 : center.x - maxR;
-        int rows_to = center.x + maxR >= height ? height : center.x + maxR;
-        int cols_from = center.y - maxR < 0 ? 0 : center.y - maxR;
-        int cols_to = center.y + maxR >= width ? width : center.y + maxR;
+        int rows_from = center_orig.x - maxR < 0 ? 0 : center_orig.x - maxR;
+        int rows_to = center_orig.x + maxR >= height ? height : center_orig.x + maxR;
+        int cols_from = center_orig.y - maxR < 0 ? 0 : center_orig.y - maxR;
+        int cols_to = center_orig.y + maxR >= width ? width : center_orig.y + maxR;
 
-        if(center.x - maxR < 0) return;
-        if(center.x + maxR >= height) return;
-        if(center.y - maxR < 0) return;
-        if(center.y + maxR >= width) return;
+        if(center_orig.x - maxR < 0) return;
+        if(center_orig.x + maxR >= height) return;
+        if(center_orig.y - maxR < 0) return;
+        if(center_orig.y + maxR >= width) return;
 
         Mat toCenter_mat(Size(2*maxR, 2*maxR), CV_32F, Scalar(0));
         Mat current_phase = phase_img(
@@ -112,7 +121,7 @@ namespace TimberControl
                 Range(cols_from, cols_to));
         
         //std::cout<<center.x<<", "<<center.y<<"\n";
-        center = Point(center.x - rows_from, center.y - cols_from);
+        Point center = Point(center_orig.x - rows_from, center_orig.y - cols_from);
         
         for(int row=0; row<2*maxR; row++)
             for(int col = 0; col < 2*maxR; col++)
@@ -157,11 +166,17 @@ namespace TimberControl
         //circle(circleMat, Point(center.x, center.y), bestR, Scalar(255));
 
         //std::cout<<bestR<<": bestR, bestN:"<<bestN<<"\n";
-       
 
-        R.at<int>(center.x, center.y) = bestR;
-        N.at<int>(center.x, center.y) = bestN; 
+        R.at<int>(center_orig.x, center_orig.y) = bestR;
+        N.at<int>(center_orig.x, center_orig.y) = bestN; 
+        
+        assert(center_orig.x >= 0 && center_orig.x < R.rows);
+        assert(center_orig.y >= 0 && center_orig.y < N.cols);
 
+        assert(N.rows == R.rows && N.cols == R.cols);
+
+        assert(R.at<int>(center_orig.x, center_orig.y) == bestR);
+        assert(N.at<int>(center_orig.x, center_orig.y) == bestN);
         //imshow("dupa dupa dupa",circleMat);
         //waitKey(0);
         /*

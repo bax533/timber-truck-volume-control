@@ -42,7 +42,7 @@ namespace TimberControl
         void showImage(imgNum img); 
 
         void PerformRussianMagic();
-        void FindBestCircle(Point center);
+        void FindBestCircle(const Point& center_orig);
     
     };
 }

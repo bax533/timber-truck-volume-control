@@ -14,7 +14,7 @@ namespace TimberControl
 {
     using namespace cv;
 
-    const int maxR = 30, minR = 4;
+    const int maxR = 44, minR = 8;
 
     template <typename T>
     struct Vector
@@ -59,17 +59,22 @@ namespace TimberControl
             p.second >= 0 && p.second < width;
     }
 
-    inline void getMaxAndPos(const Mat& m, int& maxVal, Point& p)
+    inline void getMaxAndPos(const Mat& N, const Mat& R, double& maxVal, Point& p)
     {
-        for(int row = 0; row < m.rows; row++)
+        double curMax = -1.0;
+        for(int row = 0; row < N.rows; row++)
         {
-            for(int col = 0; col < m.cols; col++)
+            for(int col = 0; col < N.cols; col++)
             {
-                int curVal = (int)m.at<uchar>(row, col);
-                if(curVal > maxVal)
+                int curN = N.at<int>(row, col);
+                int curR = R.at<int>(row, col);
+
+                double curVal = (double)curN/(double)curR;
+                if(curVal > curMax)
                 {
                     p = Point(row, col);
                     maxVal = curVal;
+                    curMax = curVal;
                 }
             }
         }
