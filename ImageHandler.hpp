@@ -6,6 +6,7 @@
 #include "opencv2/highgui.hpp"
 #include <iostream>
 
+#include "Profiler.hpp"
 #include "Common.hpp"
 
 namespace TimberControl
@@ -25,7 +26,7 @@ namespace TimberControl
     class ImageHandler
     {
         Mat src, src_gray, grad_x, grad_y, grad_xy, grad_xy_thin, phase_img;
-        Mat R, N;
+        Mat R, N, toCenter_mat;
         int ksize, scale, delta;
         int cannyLowThresh = 100, cannyHighThresh = 200;
 

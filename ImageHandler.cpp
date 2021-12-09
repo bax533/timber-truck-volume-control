@@ -21,6 +21,7 @@ namespace TimberControl
     {
         R = Mat(Size(src.cols, src.rows), CV_32SC1, Scalar(0)); 
         N = Mat(Size(src.cols, src.rows), CV_32SC1, Scalar(0));
+        toCenter_mat = Mat(Size(2*maxR, 2*maxR), CV_32F, Scalar(0));
 
         GaussianBlur(src, src, Size(3, 3), 0, 0, BORDER_DEFAULT);
         cvtColor(src, src_gray, COLOR_BGR2GRAY);
@@ -50,7 +51,19 @@ namespace TimberControl
         std::cout<<src.rows<<" "<<src.cols<<" src\n";
         std::cout<<R.rows<<" "<<R.cols<<" R\n";
 
-
+        for(int row=0; row<2*maxR; row++)
+        {
+            //float* rPtr = toCenter_mat.ptr<float>(row);
+            for(int col = 0; col < 2*maxR; col++)
+            {
+                //Vector<int> toCenter = {center.y - col, center.x - row};
+                float toCenter_th = ApproxAtan2(maxR - row, maxR - col) * toDeg;
+                toCenter_mat.at<float>(row, col) = toCenter_th >= 0 ? toCenter_th : 360 + toCenter_th; 
+                //if(toCenter_th < 0)
+                //    toCenter_th = 360 + toCenter_th;
+                //rPtr[col] = toCenter_th;
+            }
+        }
 
         assert(src.rows == R.rows && src.cols == R.cols && src.rows == grad_x.rows && src.cols == grad_x.cols);
     }
@@ -61,8 +74,7 @@ namespace TimberControl
         int width = grad_x.cols;
         //int step = grad_x.step;
 
-        
-
+        profiler.Start("mainLoop");
         for(int row = 0; row < height; row++)
         {   
             for(int col = 0; col < width; col++)
@@ -71,7 +83,12 @@ namespace TimberControl
             }
             std::cout<<(double)row/(double)height * 100.0<<"%\n";
         }
+        profiler.Stop("mainLoop");
 
+        profiler.getTime("loop1", true);
+        profiler.getTime("loop2", true);
+        profiler.getTime("mainLoop", true);
+        
         Mat resultImg = Mat::zeros(src_gray.rows, src_gray.cols, CV_8U);
         double maxVal = -1.0;
         Point maxPoint;
@@ -111,7 +128,6 @@ namespace TimberControl
         if(center_orig.y - maxR < 0) return;
         if(center_orig.y + maxR >= width) return;
 
-        Mat toCenter_mat(Size(2*maxR, 2*maxR), CV_32F, Scalar(0));
         Mat current_phase = phase_img(
                 Range(rows_from, rows_to),
                 Range(cols_from, cols_to));
@@ -120,39 +136,22 @@ namespace TimberControl
                 Range(rows_from, rows_to),
                 Range(cols_from, cols_to));
         
-        //std::cout<<center.x<<", "<<center.y<<"\n";
-        Point center = Point(center_orig.x - rows_from, center_orig.y - cols_from);
-        
-        for(int row=0; row<2*maxR; row++)
-            for(int col = 0; col < 2*maxR; col++)
-            {
-                Vector<int> toCenter = {center.y - col, center.x - row};
-                float toCenter_th = atan2(toCenter.y, toCenter.x) * 180/PI;
-                toCenter_mat.at<float>(row, col) = toCenter_th >= 0 ? toCenter_th : 360 + toCenter_th; 
-            }
-
-        
-        //std::cout<<toCenter_mat.rows<<", "<<toCenter_mat.cols<<" toCenter rows, cols\n";
-        //std::cout<<current_canny.rows<<", "<<current_canny.cols<<" phase rows, cols\n";
-
         Mat result = abs(toCenter_mat - current_phase);
         
         threshold(result, result, 10, 255, 1);
         result.convertTo(result, CV_8U);
         current_canny.convertTo(current_canny, CV_8U);
         
-        //std::cout<<result.rows<<", "<<result.cols<<" result rows, cols\n";
-        //std::cout<<current_canny.rows<<", "<<current_canny.cols<<" canny rows, cols\n";
-        
         bitwise_and(result, current_canny, result);
         
         int bestN = -1;
         int bestR = -1;
 
+        profiler.Start("loop2");
         for(int r = maxR; r >= minR; r--)
         {
             Mat circleMat = Mat::zeros(2*maxR, 2*maxR, CV_8U);
-            circle(circleMat, Point(center.x, center.y), r, Scalar(255));
+            circle(circleMat, Point(maxR, maxR), r, Scalar(255));
             bitwise_and(result, circleMat, circleMat);
             int n = countNonZero(circleMat); 
             if(n > bestN)
@@ -161,11 +160,7 @@ namespace TimberControl
                 bestR = r;
             }
         }
-
-        //Mat circleMat(Size(2*maxR, 2*maxR), CV_8U, Scalar(0));
-        //circle(circleMat, Point(center.x, center.y), bestR, Scalar(255));
-
-        //std::cout<<bestR<<": bestR, bestN:"<<bestN<<"\n";
+        profiler.Stop("loop2");
 
         R.at<int>(center_orig.x, center_orig.y) = bestR;
         N.at<int>(center_orig.x, center_orig.y) = bestN; 
@@ -177,35 +172,6 @@ namespace TimberControl
 
         assert(R.at<int>(center_orig.x, center_orig.y) == bestR);
         assert(N.at<int>(center_orig.x, center_orig.y) == bestN);
-        //imshow("dupa dupa dupa",circleMat);
-        //waitKey(0);
-        /*
-        for(int row = center.x - maxR; row <= center.x + maxR; row++)
-        {
-            for(int col = center.y - maxR; col <= center.y + maxR; col++)
-            {
-                if(!InBounds({row, col}, width, height))
-                    continue;
-                Vector<int> toCenter = {center.y-col, center.x-row}; //x, y
-                Vector<int> gradAngle = {(int)grad_x.at<uchar>(row, col), (int)grad_y.at<uchar>(row, col)};
-                
-                float toCenter_th = atan2(toCenter.y, toCenter.x)*180/PI; 
-                float grad_th = phase_img.at<float>(row, col);
-                if(gradAngle.x != 0 && gradAngle.y != 0)
-                    grad_th = atan2(gradAngle.y, gradAngle.x) * 180 / PI;
-               
-                if(toCenter_th < 0)
-                    toCenter_th = 360 + toCenter_th;
-
-                if(abs(grad_th-toCenter_th) < 20)
-                    angleOk.at<uchar>(row - center.x + maxR, col - center.y + maxR) = 255;
-            }
-        }
-
-        imshow("org", src_gray);
-        imshow("ANGLE OKKKKs", angleOk);
-        waitKey(0); 
-        */
     }
 
     void ImageHandler::showImage(imgNum img)
