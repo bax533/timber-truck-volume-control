@@ -16,7 +16,7 @@ namespace TimberControl
 {
     using namespace cv;
 
-    const int maxR = 38, minR = 8;
+    const int maxR = 46, minR = 8;
     const float toDeg = 180.0/PI;
 
     template <typename T>
