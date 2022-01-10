@@ -1,0 +1,4 @@
+- Dodać że wykrywanie kolek działa przy krawędziach zdjęcia też
+- Przetestować wykrywanie targetu na prawdziwych wydrukach
+- dobrać parametry do wykrywania kolek
+- ogarnac "wyplaszczanie" zdjęcia z obiektywów

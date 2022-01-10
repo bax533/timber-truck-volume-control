@@ -51,7 +51,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/szymon/inz/timber-truck-volume-control
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/szymon/inz/timber-truck-volume-control
+CMAKE_BINARY_DIR = /home/szymon/inz/timber-truck-volume-control/Debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/szymon/inz/timber-truck-volume-control/CMakeFiles /home/szymon/inz/timber-truck-volume-control/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/szymon/inz/timber-truck-volume-control/Debug/CMakeFiles /home/szymon/inz/timber-truck-volume-control/Debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/szymon/inz/timber-truck-volume-control/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/szymon/inz/timber-truck-volume-control/Debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Timber-Volume-Control
+# Target rules for targets named dupa
 
 # Build rule for target.
-Timber-Volume-Control: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Timber-Volume-Control
-.PHONY : Timber-Volume-Control
+dupa: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 dupa
+.PHONY : dupa
 
 # fast build rule for target.
-Timber-Volume-Control/fast:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/build
-.PHONY : Timber-Volume-Control/fast
+dupa/fast:
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/build
+.PHONY : dupa/fast
 
 src/CameraHandler.o: src/CameraHandler.cpp.o
 
@@ -129,7 +129,7 @@ src/CameraHandler.o: src/CameraHandler.cpp.o
 
 # target to build an object file
 src/CameraHandler.cpp.o:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/CameraHandler.cpp.o
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/CameraHandler.cpp.o
 .PHONY : src/CameraHandler.cpp.o
 
 src/CameraHandler.i: src/CameraHandler.cpp.i
@@ -138,7 +138,7 @@ src/CameraHandler.i: src/CameraHandler.cpp.i
 
 # target to preprocess a source file
 src/CameraHandler.cpp.i:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/CameraHandler.cpp.i
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/CameraHandler.cpp.i
 .PHONY : src/CameraHandler.cpp.i
 
 src/CameraHandler.s: src/CameraHandler.cpp.s
@@ -147,7 +147,7 @@ src/CameraHandler.s: src/CameraHandler.cpp.s
 
 # target to generate assembly for a file
 src/CameraHandler.cpp.s:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/CameraHandler.cpp.s
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/CameraHandler.cpp.s
 .PHONY : src/CameraHandler.cpp.s
 
 src/ImageHandler.o: src/ImageHandler.cpp.o
@@ -156,7 +156,7 @@ src/ImageHandler.o: src/ImageHandler.cpp.o
 
 # target to build an object file
 src/ImageHandler.cpp.o:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/ImageHandler.cpp.o
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/ImageHandler.cpp.o
 .PHONY : src/ImageHandler.cpp.o
 
 src/ImageHandler.i: src/ImageHandler.cpp.i
@@ -165,7 +165,7 @@ src/ImageHandler.i: src/ImageHandler.cpp.i
 
 # target to preprocess a source file
 src/ImageHandler.cpp.i:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/ImageHandler.cpp.i
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/ImageHandler.cpp.i
 .PHONY : src/ImageHandler.cpp.i
 
 src/ImageHandler.s: src/ImageHandler.cpp.s
@@ -174,7 +174,7 @@ src/ImageHandler.s: src/ImageHandler.cpp.s
 
 # target to generate assembly for a file
 src/ImageHandler.cpp.s:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/ImageHandler.cpp.s
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/ImageHandler.cpp.s
 .PHONY : src/ImageHandler.cpp.s
 
 src/ReferenceFinder.o: src/ReferenceFinder.cpp.o
@@ -183,7 +183,7 @@ src/ReferenceFinder.o: src/ReferenceFinder.cpp.o
 
 # target to build an object file
 src/ReferenceFinder.cpp.o:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/ReferenceFinder.cpp.o
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/ReferenceFinder.cpp.o
 .PHONY : src/ReferenceFinder.cpp.o
 
 src/ReferenceFinder.i: src/ReferenceFinder.cpp.i
@@ -192,7 +192,7 @@ src/ReferenceFinder.i: src/ReferenceFinder.cpp.i
 
 # target to preprocess a source file
 src/ReferenceFinder.cpp.i:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/ReferenceFinder.cpp.i
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/ReferenceFinder.cpp.i
 .PHONY : src/ReferenceFinder.cpp.i
 
 src/ReferenceFinder.s: src/ReferenceFinder.cpp.s
@@ -201,7 +201,7 @@ src/ReferenceFinder.s: src/ReferenceFinder.cpp.s
 
 # target to generate assembly for a file
 src/ReferenceFinder.cpp.s:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/ReferenceFinder.cpp.s
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/ReferenceFinder.cpp.s
 .PHONY : src/ReferenceFinder.cpp.s
 
 src/VolumeCalculator.o: src/VolumeCalculator.cpp.o
@@ -210,7 +210,7 @@ src/VolumeCalculator.o: src/VolumeCalculator.cpp.o
 
 # target to build an object file
 src/VolumeCalculator.cpp.o:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/VolumeCalculator.cpp.o
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/VolumeCalculator.cpp.o
 .PHONY : src/VolumeCalculator.cpp.o
 
 src/VolumeCalculator.i: src/VolumeCalculator.cpp.i
@@ -219,7 +219,7 @@ src/VolumeCalculator.i: src/VolumeCalculator.cpp.i
 
 # target to preprocess a source file
 src/VolumeCalculator.cpp.i:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/VolumeCalculator.cpp.i
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/VolumeCalculator.cpp.i
 .PHONY : src/VolumeCalculator.cpp.i
 
 src/VolumeCalculator.s: src/VolumeCalculator.cpp.s
@@ -228,7 +228,7 @@ src/VolumeCalculator.s: src/VolumeCalculator.cpp.s
 
 # target to generate assembly for a file
 src/VolumeCalculator.cpp.s:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/VolumeCalculator.cpp.s
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/VolumeCalculator.cpp.s
 .PHONY : src/VolumeCalculator.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -237,7 +237,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/main.cpp.o
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -246,7 +246,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/main.cpp.i
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -255,7 +255,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/Timber-Volume-Control.dir/build.make CMakeFiles/Timber-Volume-Control.dir/src/main.cpp.s
+	$(MAKE) -f CMakeFiles/dupa.dir/build.make CMakeFiles/dupa.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -266,7 +266,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... Timber-Volume-Control"
+	@echo "... dupa"
 	@echo "... src/CameraHandler.o"
 	@echo "... src/CameraHandler.i"
 	@echo "... src/CameraHandler.s"

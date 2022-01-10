@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/szymon/inz/timber-truck-volume-control/src/CameraHandler.cpp
+CameraHandler.hpp
+/home/szymon/inz/timber-truck-volume-control/src/CameraHandler.hpp
+
+/home/szymon/inz/timber-truck-volume-control/src/ImageHandler.cpp
+ImageHandler.hpp
+/home/szymon/inz/timber-truck-volume-control/src/ImageHandler.hpp
+
+/home/szymon/inz/timber-truck-volume-control/src/ReferenceFinder.cpp
+ReferenceFinder.hpp
+/home/szymon/inz/timber-truck-volume-control/src/ReferenceFinder.hpp
+
+/home/szymon/inz/timber-truck-volume-control/src/VolumeCalculator.cpp
+VolumeCalculator.hpp
+/home/szymon/inz/timber-truck-volume-control/src/VolumeCalculator.hpp
+cstdio
+-
+
+/home/szymon/inz/timber-truck-volume-control/src/main.cpp
+VolumeCalculator.hpp
+/home/szymon/inz/timber-truck-volume-control/src/VolumeCalculator.hpp
+Tester.hpp
+/home/szymon/inz/timber-truck-volume-control/src/Tester.hpp
+ReferenceFinder.hpp
+/home/szymon/inz/timber-truck-volume-control/src/ReferenceFinder.hpp
+CameraHandler.hpp
+/home/szymon/inz/timber-truck-volume-control/src/CameraHandler.hpp
+

@@ -1,0 +1,3 @@
+/home/szymon/inz/timber-truck-volume-control/Debug/CMakeFiles/rebuild_cache.dir
+/home/szymon/inz/timber-truck-volume-control/Debug/CMakeFiles/edit_cache.dir
+/home/szymon/inz/timber-truck-volume-control/Debug/CMakeFiles/dupa.dir
