@@ -43,7 +43,7 @@ public:
         cvtColor(reference, reference, COLOR_BGR2GRAY);
         cvtColor(source, source, COLOR_BGR2GRAY);
     }
-    std::vector<Point> FindTargets();
+    Area FindTargets();
 };
 
 }

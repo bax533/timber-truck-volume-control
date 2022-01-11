@@ -70,14 +70,22 @@ namespace TimberControl
 
     std::vector<Circle> ImageHandler::PerformRussianMagic()
     {
+        return PerformRussianMagic({
+                {0,0},
+                {src_gray.cols, 0},
+                {0, src_gray.rows},
+                {src_gray.cols, src_gray.rows}});
+    }
+
+    std::vector<Circle> ImageHandler::PerformRussianMagic(Area searchArea)
+    {
         int height = grad_x.rows;
         int width = grad_x.cols;
-        //int step = grad_x.step;
 
         profiler.Start("mainLoop");
-        for(int row = 0; row < height; row++)
+        for(int row = searchArea.upper_l.y; row < searchArea.lower_l.y; row++)
         {   
-            for(int col = 0; col < width; col++)
+            for(int col = searchArea.upper_l.x; col < searchArea.upper_r.x; col++)
             {
                 FindBestCircle(Point(row, col));
             }
@@ -97,11 +105,14 @@ namespace TimberControl
         std::cout<<"point max: "<<maxPoint.x<<" "<<maxPoint.y<<"\n";
         int curR = (int)R.at<int>(maxPoint.y, maxPoint.x);
         
-        std::cout<<maxVal<<"  <- maxVal  cur R -> "<<(int)curR<<"\n";
-        
+        std::cout<<maxVal<<"  <- maxVal  cur R -> "<<(int)curR<<"\n"; 
+
         std::vector<Circle> resultVec;
+
         while(maxVal > 0.8)
         {
+            if(curR > 500)
+                continue;
             circle(resultImg, Point(maxPoint.y, maxPoint.x), curR, Scalar(255), FILLED);
             circle(N, Point(maxPoint.y, maxPoint.x), curR, Scalar(0), FILLED);
             
@@ -118,6 +129,7 @@ namespace TimberControl
         imwrite("kolka.jpg", resultImg);
         imwrite("source.jpg", src_gray);
     
+        std::cout<<resultVec.size()<<" found kolkas\n";
         return resultVec; 
     }   
 

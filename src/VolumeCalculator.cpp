@@ -17,42 +17,55 @@ namespace TimberControl
         imageHandler = ImageHandler(imgPath);
         imageHandler.Prepare();
     }
-    
-    void VolumeCalculator::Start(bool debug, std::string referencePath)
+   
+    //distance in [m] 
+    void VolumeCalculator::Start(std::string referencePath, double camToTrailerBegin_dist, double distBetweenTargets_vert)
     {
-        if(debug)
-        {
-
-            return;
-        }
-
         //Take photo with camera and save it
         CameraHandler camHandler = CameraHandler();
-        sl::Mat slImg = camHandler.GetImage();
-        cv::Mat cameraImg = TimberControl::slMat2cvMat(slImg);
+
+        //sl::Mat slImg = camHandler.GetImage();
+        //cv::Mat cameraImg = TimberControl::slMat2cvMat(slImg);
+        
+        cv::Mat cameraImg = imread("wood_with_new_template.png");
+        
         imageHandler = ImageHandler(cameraImg);
         imageHandler.Prepare();
 
         //Try to find reference images in the photo
         TimberControl::ReferenceFinder refFinder(referencePath.c_str(), cameraImg);
-        std::vector<Point> targets = refFinder.FindTargets();
-        std::cout<<targets.size()<<"  size of found targets\n";
-        /*if(targets.size() == 4) //Cut the photo to the area restrained by references
-        {
-            imageHandler.CutWithReferences(targets); 
-        }*/
-
-        imageHandler.PerformRussianMagic();
-    }
-
-    double VolumeCalculator::Calculate(cv::Mat cameraImg)
-    {
-        printf("%s\n", imgPath);
+        Area searchArea = refFinder.FindTargets();
+        std::vector<Circle> foundCircles = imageHandler.PerformRussianMagic(searchArea);
+        std::cout<<foundCircles.size()<<" "<<"?\n";
+        double px_to_metres = distBetweenTargets_vert/(double)(searchArea.lower_l.y - searchArea.upper_l.y);
         
-        imageHandler.PerformRussianMagic();
-        return 0.0;
+        double volume = 0.0;
+
+        double D = camToTrailerBegin_dist;
+        for(const Circle& circle : foundCircles)
+        {
+            double circleArea = (double)circle.r * px_to_metres;
+
+            double distToAbut = camHandler.GetDistance(circle.center.x, circle.center.y);
+            double alpha = horizontalAngleForPixel(circle.center.x, cameraImg.cols, cameraImg.rows);
+            double l = D - distToAbut * std::sin(1.5708 - alpha); 
+
+            volume += circleArea * l;
+        }
+        
+        std::cout<<volume<<" sum of area\n";
     }
 
-
+    double VolumeCalculator::Calculate(const std::vector<Circle>& circles, double px_to_metres)
+    {
+        double volume = 0.0;
+        for(const Circle& circle : circles)
+        {
+            double circleArea = circle.r * px_to_metres;
+            volume += circleArea; 
+        }
+        
+       return volume;
+    }
 
 }

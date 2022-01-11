@@ -3,7 +3,7 @@
 namespace TimberControl
 {
 
-std::vector<Point> ReferenceFinder::FindTargets()
+Area ReferenceFinder::FindTargets()
 {
     std::vector<Point> result;
     
@@ -73,8 +73,27 @@ std::vector<Point> ReferenceFinder::FindTargets()
     //assert(result.size() == 4);
     //imshow("final", source);
     //waitKey(0);
-
-    return result;
+    
+    if(result.size() == 4)
+    {
+        Area retArea;
+        std::sort(result.begin(), result.end(), [](const cv::Point &a, const cv::Point &b) {
+                return a.x < b.x || a.y < b.y;
+            }
+        );
+        return {
+            result[0],
+            result[2],
+            result[1],
+            result[3]};    
+    }
+    else
+    {
+        return {{0,0},
+                {source.cols, 0},
+                {0, source.rows},
+                {source.cols, source.rows}};
+    }
 }
 
 }

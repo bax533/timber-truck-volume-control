@@ -47,6 +47,9 @@ namespace TimberControl
     const int maxR = 46, minR = 8;
     const float toDeg = 180.0/PI;
 
+    const double fov_x = 88.0;
+    const double fov_y = 57.0;
+
     template <typename T>
     struct Vector
     {
@@ -59,7 +62,23 @@ namespace TimberControl
         int r;
     };
 
+
+    struct Area
+    {
+        Point upper_l, upper_r, lower_l, lower_r;
+    };
+
     const String windowName = "window";
+
+
+    inline double horizontalAngleForPixel(int x, int imgWidth, int imgHeight)
+    {
+        double center = imgWidth / 2;
+        double horizontalFovPerPixel = fov_y/imgHeight;
+
+        double angle = std::abs(center - x) * horizontalFovPerPixel;
+        return angle;
+    }
 
     template <typename T>
     inline double Dot(const Vector<T>& v,const Vector<T>& g)

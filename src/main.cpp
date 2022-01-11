@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     }
 
     TimberControl::VolumeCalculator volumeCalculator;
-    volumeCalculator.Start(false, reference_image_path);
+    volumeCalculator.Start(reference_image_path, 2.4, 2.0);
 
     /*
     TimberControl::Tester tester = TimberControl::Tester();

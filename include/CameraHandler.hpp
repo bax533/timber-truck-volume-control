@@ -9,7 +9,7 @@ public:
     CameraHandler();
 
     sl::Mat GetImage();
-    float GetDistance(int x, int y);
+    double GetDistance(int x, int y);
 private:
 
     sl::Camera zed_;

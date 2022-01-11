@@ -30,7 +30,7 @@ sl::Mat CameraHandler::GetImage()
     }
 }
 
-float CameraHandler::GetDistance(int x, int y)
+double CameraHandler::GetDistance(int x, int y)
 {
     float distance;
     depth_.getValue(x, y, &distance);

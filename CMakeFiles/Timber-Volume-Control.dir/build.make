@@ -144,7 +144,7 @@ Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libopenblas.so
 Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libusb-1.0.so
 Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libnvidia-encode.so
 Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libcuda.so
-Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libnvcuvid.so.495.29.05
+Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libnvcuvid.so.495.46
 Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.4.2.0
 Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libopencv_aruco.so.4.2.0
 Timber-Volume-Control: /usr/lib/x86_64-linux-gnu/libopencv_bgsegm.so.4.2.0

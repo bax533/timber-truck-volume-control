@@ -44,6 +44,8 @@ namespace TimberControl
         void showImage(imgNum img); 
 
         std::vector<Circle> PerformRussianMagic();
+        std::vector<Circle> PerformRussianMagic(Area searchArea);
+        
         void FindBestCircle(const Point& center_orig);
     
     };

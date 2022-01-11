@@ -18,9 +18,9 @@ namespace TimberControl
         VolumeCalculator(cv::Mat image);
         VolumeCalculator(const char* imgPath);
 
-        void Start(bool debug, std::string referencePath);
+        void Start(std::string referencePath, double camToTrailerBegin_dist, double distBetweenTargets_vert);
          
-        double Calculate(cv::Mat cameraImg);
+        double Calculate(const std::vector<Circle>& circles, double pxMultiplier);
   };
 }
 
