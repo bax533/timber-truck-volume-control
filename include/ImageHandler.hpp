@@ -43,11 +43,12 @@ namespace TimberControl
         void CutWithReferences(std::vector<Point> targets);
         void showImage(imgNum img); 
 
-        std::vector<Circle> PerformRussianMagic();
-        std::vector<Circle> PerformRussianMagic(Area searchArea);
+        std::vector<Circle> FindCircles();
+        std::vector<Circle> FindCirclesDebug(int angleThresh, double circleThresh);
+        std::vector<Circle> FindCircles(Area searchArea);
         
-        void FindBestCircle(const Point& center_orig);
-    
+        void FindBestCircle(const Point& center_orig, int angleThresh = 10);
+            
     };
 }
 

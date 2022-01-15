@@ -46,11 +46,6 @@ namespace TimberControl
         
         Canny(src_gray, grad_xy_thin, cannyLowThresh, cannyHighThresh, 3, false);
         
-        std::cout<<grad_x.rows<<" "<<grad_x.cols<<" grad_x\n";
-        std::cout<<src_gray.rows<<" "<<src_gray.cols<<" src_gray\n";
-        std::cout<<src.rows<<" "<<src.cols<<" src\n";
-        std::cout<<R.rows<<" "<<R.cols<<" R\n";
-
         for(int row=0; row<2*maxR; row++)
         {
             //float* rPtr = toCenter_mat.ptr<float>(row);
@@ -68,16 +63,16 @@ namespace TimberControl
         assert(src.rows == R.rows && src.cols == R.cols && src.rows == grad_x.rows && src.cols == grad_x.cols);
     }
 
-    std::vector<Circle> ImageHandler::PerformRussianMagic()
+    std::vector<Circle> ImageHandler::FindCircles()
     {
-        return PerformRussianMagic({
+        return FindCircles({
                 {0,0},
                 {src_gray.cols, 0},
                 {0, src_gray.rows},
                 {src_gray.cols, src_gray.rows}});
     }
 
-    std::vector<Circle> ImageHandler::PerformRussianMagic(Area searchArea)
+    std::vector<Circle> ImageHandler::FindCircles(Area searchArea)
     {
         int height = grad_x.rows;
         int width = grad_x.cols;
@@ -111,7 +106,7 @@ namespace TimberControl
 
         while(maxVal > 0.8)
         {
-            if(curR > 500)
+            if(curR > maxR)
                 continue;
             circle(resultImg, Point(maxPoint.y, maxPoint.x), curR, Scalar(255), FILLED);
             circle(N, Point(maxPoint.y, maxPoint.x), curR, Scalar(0), FILLED);
@@ -123,6 +118,7 @@ namespace TimberControl
             std::cout<<maxVal<<" <- cur ratio\n";
             std::cout<<curR<<" <-curR  Point-> "<<maxPoint.x<<", "<<maxPoint.y<<"  maxVal:"<<maxVal<<"\n";
         }
+        /*
         imshow("kolkas", resultImg);
         imshow("source", src_gray);
         waitKey(0);
@@ -130,10 +126,48 @@ namespace TimberControl
         imwrite("source.jpg", src_gray);
     
         std::cout<<resultVec.size()<<" found kolkas\n";
+        */
         return resultVec; 
+    
     }   
 
-    void ImageHandler::FindBestCircle(const Point& center_orig)
+    std::vector<Circle> ImageHandler::FindCirclesDebug(int angleThresh, double circleThresh)
+    {
+        int height = grad_x.rows;
+        int width = grad_x.cols;
+
+        for(int row = 0; row < src_gray.rows; row++)
+        {   
+            for(int col = 0; col < src_gray.cols; col++)
+            {
+                FindBestCircle(Point(row, col), angleThresh);
+            }
+        }
+
+        Mat resultImg = Mat::zeros(src_gray.rows, src_gray.cols, CV_8U);
+        double maxVal = -1.0;
+        Point maxPoint;
+        getMaxAndPos(N, R, maxVal, maxPoint);
+        
+        int curR = (int)R.at<int>(maxPoint.y, maxPoint.x);
+        
+        std::vector<Circle> resultVec;
+
+        while(maxVal > circleThresh)
+        {
+            if(curR > maxR)
+                continue;
+            circle(resultImg, Point(maxPoint.y, maxPoint.x), curR, Scalar(255), FILLED);
+            circle(N, Point(maxPoint.y, maxPoint.x), curR, Scalar(0), FILLED);
+            
+            resultVec.push_back({Point(maxPoint.y, maxPoint.x), curR});
+            getMaxAndPos(N, R, maxVal, maxPoint);
+            curR = R.at<int>(maxPoint.x, maxPoint.y);
+        }
+        return resultVec;  
+    }
+
+    void ImageHandler::FindBestCircle(const Point& center_orig, int angleThresh)
     {//TODO adjust finding circle to image edges (currently finding on smaller img)
         int height = grad_x.rows;
         int width = grad_x.cols;
@@ -158,7 +192,7 @@ namespace TimberControl
         
         Mat result = abs(toCenter_mat - current_phase);
         
-        threshold(result, result, 10, 255, 1);
+        threshold(result, result, angleThresh, 255, 1);
         result.convertTo(result, CV_8U);
         current_canny.convertTo(current_canny, CV_8U);
         

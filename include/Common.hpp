@@ -44,7 +44,7 @@ namespace TimberControl
                 input.getStepBytes(sl::MEM::CPU));
     }
 
-    const int maxR = 46, minR = 8;
+    const int maxR = 50, minR = 8;
     const float toDeg = 180.0/PI;
 
     const double fov_x = 88.0;

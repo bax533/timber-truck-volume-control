@@ -34,13 +34,6 @@ int main(int argc, char* argv[])
     }
 
     TimberControl::VolumeCalculator volumeCalculator;
-    volumeCalculator.Start(reference_image_path, 2.4, 2.0);
-
-    /*
-    TimberControl::Tester tester = TimberControl::Tester();
-    cv::Mat img = imread(path, IMREAD_COLOR);
-    cv::cvtColor(img, img, COLOR_BGR2GRAY);
-
-    tester.test(img);    
-    */
+    //volumeCalculator.Start(reference_image_path, 2.4, 2.0);
+    volumeCalculator.FindParameters();
 }

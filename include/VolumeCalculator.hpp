@@ -21,7 +21,8 @@ namespace TimberControl
         void Start(std::string referencePath, double camToTrailerBegin_dist, double distBetweenTargets_vert);
          
         double Calculate(const std::vector<Circle>& circles, double pxMultiplier);
-  };
+        void FindParameters();
+    };
 }
 
 #endif
