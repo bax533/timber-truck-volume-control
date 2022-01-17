@@ -47,7 +47,7 @@ namespace TimberControl
         std::vector<Circle> FindCirclesDebug(int angleThresh, double circleThresh);
         std::vector<Circle> FindCircles(Area searchArea);
         
-        void FindBestCircle(const Point& center_orig, int angleThresh = 10);
+        void FindBestCircle(const Point& center_orig, int angleThresh = 7);
             
     };
 }

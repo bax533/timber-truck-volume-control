@@ -11,7 +11,7 @@ sl::Mat CameraHandler::GetImage()
 {
     auto returned_state = zed_.open(initParams_);
     assert(returned_state == sl::ERROR_CODE::SUCCESS);
-
+    
     sl::RuntimeParameters runtimeParams;
     runtimeParams.sensing_mode = sl::SENSING_MODE::STANDARD;
 

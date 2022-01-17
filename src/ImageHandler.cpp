@@ -51,12 +51,8 @@ namespace TimberControl
             //float* rPtr = toCenter_mat.ptr<float>(row);
             for(int col = 0; col < 2*maxR; col++)
             {
-                //Vector<int> toCenter = {center.y - col, center.x - row};
                 float toCenter_th = ApproxAtan2(maxR - row, maxR - col) * toDeg;
                 toCenter_mat.at<float>(row, col) = toCenter_th >= 0 ? toCenter_th : 360 + toCenter_th; 
-                //if(toCenter_th < 0)
-                //    toCenter_th = 360 + toCenter_th;
-                //rPtr[col] = toCenter_th;
             }
         }
 
@@ -77,20 +73,18 @@ namespace TimberControl
         int height = grad_x.rows;
         int width = grad_x.cols;
 
-        profiler.Start("mainLoop");
-        for(int row = searchArea.upper_l.y; row < searchArea.lower_l.y; row++)
+        for(int row = std::min(searchArea.upper_l.y, searchArea.upper_r.y);
+                row < std::max(searchArea.lower_l.y, searchArea.lower_r.y);
+                row++)
         {   
-            for(int col = searchArea.upper_l.x; col < searchArea.upper_r.x; col++)
+            for(int col = std::min(searchArea.upper_l.x, searchArea.lower_l.x);
+                    col < std::max(searchArea.upper_r.x, searchArea.lower_r.x);
+                    col++)
             {
                 FindBestCircle(Point(row, col));
             }
             std::cout<<(double)row/(double)height * 100.0<<"%\n";
         }
-        profiler.Stop("mainLoop");
-
-        profiler.getTime("loop1", true);
-        profiler.getTime("loop2", true);
-        profiler.getTime("mainLoop", true);
         
         Mat resultImg = Mat::zeros(src_gray.rows, src_gray.cols, CV_8U);
         double maxVal = -1.0;
@@ -104,7 +98,7 @@ namespace TimberControl
 
         std::vector<Circle> resultVec;
 
-        while(maxVal > 0.8)
+        while(maxVal > circleRatioThreshold)
         {
             if(curR > maxR)
                 continue;
@@ -156,7 +150,13 @@ namespace TimberControl
         while(maxVal > circleThresh)
         {
             if(curR > maxR)
+            {
+                circle(N, Point(maxPoint.y, maxPoint.x), 2*minR, Scalar(0), FILLED);
+                resultVec.push_back({Point(maxPoint.y, maxPoint.x), curR});
+                getMaxAndPos(N, R, maxVal, maxPoint);
+                curR = R.at<int>(maxPoint.x, maxPoint.y); 
                 continue;
+            }    
             circle(resultImg, Point(maxPoint.y, maxPoint.x), curR, Scalar(255), FILLED);
             circle(N, Point(maxPoint.y, maxPoint.x), curR, Scalar(0), FILLED);
             
@@ -201,8 +201,7 @@ namespace TimberControl
         int bestN = -1;
         int bestR = -1;
 
-        profiler.Start("loop2");
-        for(int r = maxR; r >= minR; r--)
+        for(int r = minR; r <= maxR; r++)
         {
             Mat circleMat = Mat::zeros(2*maxR, 2*maxR, CV_8U);
             circle(circleMat, Point(maxR, maxR), r, Scalar(255));
@@ -214,7 +213,6 @@ namespace TimberControl
                 bestR = r;
             }
         }
-        profiler.Stop("loop2");
 
         R.at<int>(center_orig.x, center_orig.y) = bestR;
         N.at<int>(center_orig.x, center_orig.y) = bestN; 

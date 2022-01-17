@@ -24,37 +24,67 @@ namespace TimberControl
         //Take photo with camera and save it
         CameraHandler camHandler = CameraHandler();
 
-        //sl::Mat slImg = camHandler.GetImage();
-        //cv::Mat cameraImg = TimberControl::slMat2cvMat(slImg);
+       //READ Z KAMERKI
         
-        cv::Mat cameraImg = imread("wood.png");
+        sl::Mat slImg = camHandler.GetImage();
+        cv::Mat cameraImg = TimberControl::slMat2cvMat(slImg);
         
+        imshow("camera image", cameraImg);
+        waitKey(0);
+        
+        //cv::imwrite("saved_with_4reference.png", cameraImg);       
+       
+        //READ NA SZTYWNO 
+        //cv::Mat cameraImg = imread("source.jpg");
+        
+        imshow("camImage", cameraImg);
+        waitKey(0);
+        destroyWindow("camImage");
+        
+                //Try to find reference images in the photo
+        TimberControl::ReferenceFinder refFinder(referencePath.c_str(), cameraImg);
+        Area searchArea = refFinder.FindTargets();
+        
+        circle(cameraImg, searchArea.upper_l, 50, Scalar(0), FILLED);
+        circle(cameraImg, searchArea.upper_r, 50, Scalar(0), FILLED);
+        circle(cameraImg, searchArea.lower_l, 50, Scalar(0), FILLED);
+        circle(cameraImg, searchArea.lower_r, 50, Scalar(0), FILLED);
+
         imageHandler = ImageHandler(cameraImg);
         imageHandler.Prepare();
 
-        //Try to find reference images in the photo
-        TimberControl::ReferenceFinder refFinder(referencePath.c_str(), cameraImg);
-        Area searchArea = refFinder.FindTargets();
-        std::vector<Circle> foundCircles = imageHandler.FindCircles();
+
+        std::cout<<"RECEIVED AREA:\n";
+        std::cout<<"UPPER LEFT: "<<searchArea.upper_l<<"\n";
+        std::cout<<"UPPER RIGHT: "<<searchArea.upper_r<<"\n"; 
+        std::cout<<"LOWER LEFT: "<<searchArea.lower_l<<"\n";
+        std::cout<<"LOWER RIGHT: "<<searchArea.lower_r<<"\n";
+
+        std::vector<Circle> foundCircles = imageHandler.FindCircles(searchArea);
         std::cout<<foundCircles.size()<<" found circles\n";
        
-         
+
         cv::Mat foundCircles_img(cameraImg.rows, cameraImg.cols, CV_8U, Scalar(0));
-        cv::Mat labeledImg = imread("wood_labels.png", cv::IMREAD_GRAYSCALE);            
+        
+        //cv::Mat labeledImg = imread("wood_labels.png", cv::IMREAD_GRAYSCALE);            
 
         for(const Circle& circle : foundCircles)
         {
             cv::circle(foundCircles_img, circle.center, circle.r, Scalar(255), FILLED);
         }
        
-        imshow("source", cameraImg);
+        //imshow("source", cameraImg);
+    
         imshow("circles", foundCircles_img);
+        imshow("source", cameraImg);        
+        /* Mat AND, counting pixels DEBUG
         
         cv::Mat labeled_and_found(labeledImg.rows, labeledImg.cols, CV_8U);
         bitwise_and(labeledImg, foundCircles_img, labeled_and_found);
         imshow("found && labels", labeled_and_found); 
         std::cout<<cv::countNonZero(labeled_and_found)<<" <- found && labeled  |  labeled -> "<<cv::countNonZero(labeledImg)<<"\n";
         waitKey(0);
+        */
 
         double px_to_metres = distBetweenTargets_vert/(double)(searchArea.lower_l.y - searchArea.upper_l.y);
         
@@ -63,9 +93,10 @@ namespace TimberControl
         double D = camToTrailerBegin_dist;
         for(const Circle& circle : foundCircles)
         {
-            double circleArea = (double)circle.r * px_to_metres;
+            double circleArea = pow((double)circle.r * px_to_metres, 2) * PI;
 
-            double distToAbut = camHandler.GetDistance(circle.center.x, circle.center.y);
+            double distToAbut = camHandler.GetDistance(circle.center.x, circle.center.y)/100.0;
+            std::cout<<"DISTANCE TO LOG END: "<<distToAbut<<"\n";
             double alpha = horizontalAngleForPixel(circle.center.x, cameraImg.cols, cameraImg.rows);
             double l = D - distToAbut * std::sin(1.5708 - alpha); // 90 deg = 1.5708 rad
 
@@ -73,6 +104,7 @@ namespace TimberControl
         }
         
         std::cout<<volume<<" m3\n";
+        waitKey(0);
     }
 
     double VolumeCalculator::Calculate(const std::vector<Circle>& circles, double px_to_metres)
