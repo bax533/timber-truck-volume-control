@@ -23,7 +23,7 @@ namespace TimberControl
         N = Mat(Size(src.cols, src.rows), CV_32SC1, Scalar(0));
         toCenter_mat = Mat(Size(2*maxR, 2*maxR), CV_32F, Scalar(0));
 
-        GaussianBlur(src, src, Size(3, 3), 0, 0, BORDER_DEFAULT);
+        //GaussianBlur(src, src, Size(3, 3), 0, 0, BORDER_DEFAULT);
         cvtColor(src, src_gray, COLOR_BGR2GRAY);
         //src_gray = src;
         int ddepth = CV_32F;
@@ -75,15 +75,13 @@ namespace TimberControl
 
         for(int row = std::min(searchArea.upper_l.y, searchArea.upper_r.y);
                 row < std::max(searchArea.lower_l.y, searchArea.lower_r.y);
-                row++)
-        {   
+                row++){   
             for(int col = std::min(searchArea.upper_l.x, searchArea.lower_l.x);
                     col < std::max(searchArea.upper_r.x, searchArea.lower_r.x);
-                    col++)
-            {
+                    col++){
                 FindBestCircle(Point(row, col));
             }
-            std::cout<<(double)row/(double)height * 100.0<<"%\n";
+            std::cout<<(double)row/std::max(searchArea.lower_l.y, searchArea.lower_r.y) * 100.0<<"%\n";
         }
         
         Mat resultImg = Mat::zeros(src_gray.rows, src_gray.cols, CV_8U);
@@ -102,12 +100,12 @@ namespace TimberControl
         {
             if(curR > maxR)
                 continue;
-            circle(resultImg, Point(maxPoint.y, maxPoint.x), curR, Scalar(255), FILLED);
-            circle(N, Point(maxPoint.y, maxPoint.x), curR, Scalar(0), FILLED);
+            circle(resultImg, maxPoint, curR, Scalar(255), FILLED);
+            circle(N, maxPoint, curR, Scalar(0), FILLED);
             
-            resultVec.push_back({Point(maxPoint.y, maxPoint.x), curR});
+            resultVec.push_back({maxPoint, curR});
             getMaxAndPos(N, R, maxVal, maxPoint);
-            curR = R.at<int>(maxPoint.x, maxPoint.y);
+            curR = R.at<int>(maxPoint.y, maxPoint.x);
 
             std::cout<<maxVal<<" <- cur ratio\n";
             std::cout<<curR<<" <-curR  Point-> "<<maxPoint.x<<", "<<maxPoint.y<<"  maxVal:"<<maxVal<<"\n";
@@ -201,7 +199,7 @@ namespace TimberControl
         int bestN = -1;
         int bestR = -1;
 
-        for(int r = minR; r <= maxR; r++)
+        for(int r = maxR; r >= minR; r--)
         {
             Mat circleMat = Mat::zeros(2*maxR, 2*maxR, CV_8U);
             circle(circleMat, Point(maxR, maxR), r, Scalar(255));

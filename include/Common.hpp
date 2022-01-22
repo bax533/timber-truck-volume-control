@@ -44,9 +44,9 @@ namespace TimberControl
                 input.getStepBytes(sl::MEM::CPU));
     }
 
-    const int maxR = 45, minR = 8;
+    const int maxR = 80, minR = 40;
     const float toDeg = 180.0/PI;
-    const double circleRatioThreshold = 0.8;
+    const double circleRatioThreshold = 0.75;
 
     const double fov_x = 88.0;
     const double fov_y = 57.0;
@@ -123,7 +123,7 @@ namespace TimberControl
                 double curVal = (double)curN/(double)curR;
                 if(curVal > curMax)
                 {
-                    p = Point(row, col);
+                    p = Point(col, row);
                     maxVal = curVal;
                     curMax = curVal;
                 }

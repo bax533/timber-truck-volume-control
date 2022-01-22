@@ -6,12 +6,30 @@
 
 #IncludeRegexTransform: 
 
+/home/szymon/inz/timber-truck-volume-control/src/ImageHandler.cpp
+ImageHandler.hpp
+/home/szymon/inz/timber-truck-volume-control/src/ImageHandler.hpp
+
+/home/szymon/inz/timber-truck-volume-control/src/ReferenceFinder.cpp
+ReferenceFinder.hpp
+/home/szymon/inz/timber-truck-volume-control/src/ReferenceFinder.hpp
+
 /home/szymon/inz/timber-truck-volume-control/src/VolumeCalculator.cpp
 VolumeCalculator.hpp
 /home/szymon/inz/timber-truck-volume-control/src/VolumeCalculator.hpp
 fstream
 -
 cstdio
+-
+
+/home/szymon/inz/timber-truck-volume-control/src/main.cpp
+VolumeCalculator.hpp
+/home/szymon/inz/timber-truck-volume-control/src/VolumeCalculator.hpp
+Tester.hpp
+/home/szymon/inz/timber-truck-volume-control/src/Tester.hpp
+opencv2/opencv.hpp
+-
+opencv2/cvconfig.h
 -
 
 /usr/include/opencv4/opencv2/calib3d.hpp
@@ -357,6 +375,8 @@ opencv2/core/cvdef.h
 /usr/include/opencv4/opencv2/core/opencv2/core/cvdef.h
 assert.h
 -
+
+/usr/include/opencv4/opencv2/cvconfig.h
 
 /usr/include/opencv4/opencv2/dnn.hpp
 opencv2/dnn/dnn.hpp
@@ -1853,6 +1873,22 @@ Profiler.hpp
 include/Profiler.hpp
 Common.hpp
 include/Common.hpp
+
+include/Tester.hpp
+opencv2/imgproc.hpp
+include/opencv2/imgproc.hpp
+opencv2/imgcodecs.hpp
+include/opencv2/imgcodecs.hpp
+opencv2/highgui.hpp
+include/opencv2/highgui.hpp
+vector
+-
+iostream
+-
+ImageHandler.hpp
+include/ImageHandler.hpp
+math.h
+include/math.h
 
 include/VolumeCalculator.hpp
 ImageHandler.hpp

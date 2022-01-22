@@ -16,7 +16,7 @@ Area ReferenceFinder::FindTargets()
     Canny(source, source, 50, 200, 3, false);
 
     // reference is scaled 1 pixel down at each iteration to find best possible match
-    while(reference.cols > 50)
+    while(reference.cols > 80)
     {
         Mat ref_canny; 
         Canny(reference, ref_canny, 50, 200, 3, false);
@@ -34,7 +34,7 @@ Area ReferenceFinder::FindTargets()
 
         while (true) 
         {
-            double minval, maxval, threshold = 75;
+            double minval, maxval, threshold = 30;
             Point minloc, maxloc;
             minMaxLoc(res, &minval, &maxval, &minloc, &maxloc);
             printf("%lf maxVal\n", maxval);
@@ -92,6 +92,9 @@ Area ReferenceFinder::FindTargets()
             */
             //DEBUG
         }
+
+        if(result.size() == 4)
+            break;
 
         std::cout<<"number of found: "<<result.size()<<"\n";
         printf("%d cur size\n", reference.cols);

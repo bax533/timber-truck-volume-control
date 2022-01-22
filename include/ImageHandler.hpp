@@ -25,14 +25,15 @@ namespace TimberControl
 
     class ImageHandler
     {
+
+    public:
         Mat src, src_gray, grad_x, grad_y, grad_xy, grad_xy_thin, phase_img;
         Mat R, N, toCenter_mat;
         int ksize, scale, delta;
-        int cannyLowThresh = 100, cannyHighThresh = 200;
+        int cannyLowThresh = 40, cannyHighThresh = 210;
 
         //int rMin = 5, rMax = 75; 
             
-    public:
         ImageHandler() = default;
         ImageHandler(const Mat& img);
         ImageHandler(const char* imgPath);
@@ -47,7 +48,7 @@ namespace TimberControl
         std::vector<Circle> FindCirclesDebug(int angleThresh, double circleThresh);
         std::vector<Circle> FindCircles(Area searchArea);
         
-        void FindBestCircle(const Point& center_orig, int angleThresh = 7);
+        void FindBestCircle(const Point& center_orig, int angleThresh = 11);
             
     };
 }

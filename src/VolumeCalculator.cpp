@@ -25,17 +25,17 @@ namespace TimberControl
         CameraHandler camHandler = CameraHandler();
 
        //READ Z KAMERKI
-        
+       /* 
         sl::Mat slImg = camHandler.GetImage();
         cv::Mat cameraImg = TimberControl::slMat2cvMat(slImg);
         
         imshow("camera image", cameraImg);
         waitKey(0);
-        
+        */
         //cv::imwrite("saved_with_4reference.png", cameraImg);       
        
         //READ NA SZTYWNO 
-        //cv::Mat cameraImg = imread("source.jpg");
+        cv::Mat cameraImg = imread("FIRST.png");
         
         imshow("camImage", cameraImg);
         waitKey(0);
@@ -45,13 +45,34 @@ namespace TimberControl
         TimberControl::ReferenceFinder refFinder(referencePath.c_str(), cameraImg);
         Area searchArea = refFinder.FindTargets();
         
-        circle(cameraImg, searchArea.upper_l, 50, Scalar(0), FILLED);
-        circle(cameraImg, searchArea.upper_r, 50, Scalar(0), FILLED);
-        circle(cameraImg, searchArea.lower_l, 50, Scalar(0), FILLED);
-        circle(cameraImg, searchArea.lower_r, 50, Scalar(0), FILLED);
+        circle(cameraImg, searchArea.upper_l, 20, Scalar(0,0,255), FILLED);
+        circle(cameraImg, searchArea.upper_r, 20, Scalar(0,0,255), FILLED);
+        circle(cameraImg, searchArea.lower_l, 20, Scalar(0,0,255), FILLED);
+        circle(cameraImg, searchArea.lower_r, 20, Scalar(0,0,255), FILLED);
+
+        imshow("with found", cameraImg);
+        //imwrite("found_screen.png", cameraImg);
+        std::cout<<"ESC to continue\n";
+        while(waitKey(0) != 27)
+            ;
+
+        destroyWindow("with found");
 
         imageHandler = ImageHandler(cameraImg);
         imageHandler.Prepare();
+
+        imshow("GRAY",imageHandler.src_gray);
+        waitKey(0);
+        destroyWindow("GRAY");
+
+        imshow("CANNY", imageHandler.grad_xy_thin);
+        waitKey(0);
+        destroyWindow("CANNY");
+
+        imshow("phase", imageHandler.phase_img);
+        waitKey(0);
+        destroyWindow("phase");
+
 
 
         std::cout<<"RECEIVED AREA:\n";
@@ -77,6 +98,8 @@ namespace TimberControl
     
         imshow("circles", foundCircles_img);
         imshow("source", cameraImg);        
+        imwrite("found_iphone.jpg", foundCircles_img); 
+        waitKey(0);
         /* Mat AND, counting pixels DEBUG
         
         cv::Mat labeled_and_found(labeledImg.rows, labeledImg.cols, CV_8U);
