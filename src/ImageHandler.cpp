@@ -33,14 +33,9 @@ namespace TimberControl
         Mat grad_x_abs, grad_y_abs;
 
         phase(grad_x, grad_y, phase_img, true);
- 
-        //std::cout<<phase_img.rows<<", "<<phase_img.cols<<" phase rows, cols\n";
-        //std::cout<<src_gray.rows<<", "<<src_gray.cols<<" src rows, cols\n";
 
         convertScaleAbs(grad_x, grad_x_abs);
         convertScaleAbs(grad_y, grad_y_abs);
-        //grad_x = grad_x_abs;
-        //grad_y = grad_y_abs;
         
         addWeighted(grad_x_abs, 0.5, grad_y_abs, 0.5, 0, grad_xy);
         
@@ -48,7 +43,6 @@ namespace TimberControl
         
         for(int row=0; row<2*maxR; row++)
         {
-            //float* rPtr = toCenter_mat.ptr<float>(row);
             for(int col = 0; col < 2*maxR; col++)
             {
                 float toCenter_th = ApproxAtan2(maxR - row, maxR - col) * toDeg;
@@ -166,7 +160,7 @@ namespace TimberControl
     }
 
     void ImageHandler::FindBestCircle(const Point& center_orig, int angleThresh)
-    {//TODO adjust finding circle to image edges (currently finding on smaller img)
+    {
         int height = grad_x.rows;
         int width = grad_x.cols;
 
@@ -226,7 +220,6 @@ namespace TimberControl
 
     void ImageHandler::showImage(imgNum img)
     {
-        printf("grey rows cols %d %d\n_grad_x rows cols %d %d\n", src_gray.rows, src_gray.cols, grad_x.rows, grad_x.cols);
         switch(img)
         {
             case n_src:

@@ -22,26 +22,38 @@ namespace TimberControl
     void VolumeCalculator::Start(std::string referencePath, double camToTrailerBegin_dist, double distBetweenTargets_vert)
     {
         //Take photo with camera and save it
-        CameraHandler camHandler = CameraHandler();
-
-       //READ Z KAMERKI
-       /* 
-        sl::Mat slImg = camHandler.GetImage();
-        cv::Mat cameraImg = TimberControl::slMat2cvMat(slImg);
+        int key = 0;
+        CameraHandler camHandler;
         
-        imshow("camera image", cameraImg);
-        waitKey(0);
-        */
-        //cv::imwrite("saved_with_4reference.png", cameraImg);       
+        cv::Mat cameraImg;
+        while(key != 115) //press 's' when the photo is suitable, any other key to take another one
+        {
+            camHandler = CameraHandler();
+
+           //READ FROM CAMERA
+            
+            sl::Mat slImg = camHandler.GetImage();
+            cameraImg = TimberControl::slMat2cvMat(slImg);
+            
+            resize(cameraImg, cameraImg, Size(cameraImg.cols/2, cameraImg.rows/2), INTER_LINEAR);
+            imshow("camImage", cameraImg);
+            std::cout<<"size x, y: "<<cameraImg.cols<<", "<<cameraImg.rows<<"\n";
+            key = waitKey(0);
+            destroyWindow("camImage");
+        }
        
-        //READ NA SZTYWNO 
+        //READ FROM FILE
+        
+        /*
         cv::Mat cameraImg = imread("FIRST.png");
         
+        resize(cameraImg, cameraImg, Size(cameraImg.cols/2, cameraImg.rows/2), INTER_LINEAR);
         imshow("camImage", cameraImg);
         waitKey(0);
-        destroyWindow("camImage");
+        */
         
-                //Try to find reference images in the photo
+        //Try to find reference images in the photo
+        
         TimberControl::ReferenceFinder refFinder(referencePath.c_str(), cameraImg);
         Area searchArea = refFinder.FindTargets();
         
@@ -50,30 +62,34 @@ namespace TimberControl
         circle(cameraImg, searchArea.lower_l, 20, Scalar(0,0,255), FILLED);
         circle(cameraImg, searchArea.lower_r, 20, Scalar(0,0,255), FILLED);
 
+        rectangle(cameraImg, Point(searchArea.upper_l.x-70, searchArea.upper_l.y-70), Point(searchArea.upper_l.x+70, searchArea.upper_l.y+70), Scalar(0,0,255), FILLED); 
+        rectangle(cameraImg, Point(searchArea.upper_r.x-70, searchArea.upper_r.y-70), Point(searchArea.lower_r.x+70, searchArea.lower_r.y+70), Scalar(0,0,255), FILLED);
+        rectangle(cameraImg, Point(searchArea.lower_l.x-70, searchArea.lower_l.y-70), Point(searchArea.lower_l.x+70, searchArea.lower_l.y+70), Scalar(0,0,255), FILLED);
+        rectangle(cameraImg, Point(searchArea.lower_r.x-70, searchArea.lower_r.y-70), Point(searchArea.lower_r.x+70, searchArea.lower_r.y+70), Scalar(0,0,255), FILLED);
+
         imshow("with found", cameraImg);
-        //imwrite("found_screen.png", cameraImg);
         std::cout<<"ESC to continue\n";
         while(waitKey(0) != 27)
             ;
 
         destroyWindow("with found");
-
         imageHandler = ImageHandler(cameraImg);
         imageHandler.Prepare();
 
+        
         imshow("GRAY",imageHandler.src_gray);
         waitKey(0);
         destroyWindow("GRAY");
 
         imshow("CANNY", imageHandler.grad_xy_thin);
+        //imwrite("canny_night.png", imageHandler.grad_xy_thin);
         waitKey(0);
         destroyWindow("CANNY");
 
         imshow("phase", imageHandler.phase_img);
+        //imwrite("phase_night.png", imageHandler.phase_img);
         waitKey(0);
         destroyWindow("phase");
-
-
 
         std::cout<<"RECEIVED AREA:\n";
         std::cout<<"UPPER LEFT: "<<searchArea.upper_l<<"\n";
@@ -98,36 +114,31 @@ namespace TimberControl
     
         imshow("circles", foundCircles_img);
         imshow("source", cameraImg);        
-        imwrite("found_iphone.jpg", foundCircles_img); 
+        imwrite("found_test_home.jpg", foundCircles_img); 
         waitKey(0);
-        /* Mat AND, counting pixels DEBUG
-        
-        cv::Mat labeled_and_found(labeledImg.rows, labeledImg.cols, CV_8U);
-        bitwise_and(labeledImg, foundCircles_img, labeled_and_found);
-        imshow("found && labels", labeled_and_found); 
-        std::cout<<cv::countNonZero(labeled_and_found)<<" <- found && labeled  |  labeled -> "<<cv::countNonZero(labeledImg)<<"\n";
-        waitKey(0);
-        */
 
         double px_to_metres = distBetweenTargets_vert/(double)(searchArea.lower_l.y - searchArea.upper_l.y);
+        std::cout<<px_to_metres<<" <--px to metres\n";       
         
         double volume = 0.0;
 
         double D = camToTrailerBegin_dist;
         for(const Circle& circle : foundCircles)
         {
+            std::cout<<"CIRCLE:   <---------\n";
             double circleArea = pow((double)circle.r * px_to_metres, 2) * PI;
 
-            double distToAbut = camHandler.GetDistance(circle.center.x, circle.center.y)/100.0;
+            std::cout<<"circle radius: "<<circle.r<<"\n";
+            double distToAbut = camHandler.GetDistance(circle.center.x*2, circle.center.y*2)/100.0; //image was resized down 2x
             std::cout<<"DISTANCE TO LOG END: "<<distToAbut<<"\n";
             double alpha = horizontalAngleForPixel(circle.center.x, cameraImg.cols, cameraImg.rows);
             double l = D - distToAbut * std::sin(1.5708 - alpha); // 90 deg = 1.5708 rad
+            std::cout<<"log l = "<<l<<"\n";    
 
             volume += circleArea * l;
         }
         
         std::cout<<volume<<" m3\n";
-        waitKey(0);
     }
 
     double VolumeCalculator::Calculate(const std::vector<Circle>& circles, double px_to_metres)

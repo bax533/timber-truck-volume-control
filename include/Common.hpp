@@ -44,12 +44,12 @@ namespace TimberControl
                 input.getStepBytes(sl::MEM::CPU));
     }
 
-    const int maxR = 80, minR = 40;
+    const int maxR = 80, minR = 25;
     const float toDeg = 180.0/PI;
-    const double circleRatioThreshold = 0.75;
+    const double circleRatioThreshold = 0.8;
 
-    const double fov_x = 88.0;
-    const double fov_y = 57.0;
+    const double fov_x = 96.0;
+    const double fov_y = 64.0;
 
     template <typename T>
     struct Vector

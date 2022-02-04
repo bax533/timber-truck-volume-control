@@ -5,6 +5,7 @@ CameraHandler::CameraHandler()
 {
     initParams_.depth_mode = sl::DEPTH_MODE::ULTRA;
     initParams_.coordinate_units = sl::UNIT::CENTIMETER;
+    initParams_.camera_resolution = sl::RESOLUTION::HD2K;
 }
 
 sl::Mat CameraHandler::GetImage()
@@ -12,8 +13,8 @@ sl::Mat CameraHandler::GetImage()
     auto returned_state = zed_.open(initParams_);
     assert(returned_state == sl::ERROR_CODE::SUCCESS);
     
-    zed_.setCameraSettings(sl::VIDEO_SETTINGS::BRIGHTNESS, 80);
-    zed_.setCameraSettings(sl::VIDEO_SETTINGS::SATURATION, 100);
+//    zed_.setCameraSettings(sl::VIDEO_SETTINGS::BRIGHTNESS, 80);
+//    zed_.setCameraSettings(sl::VIDEO_SETTINGS::SATURATION, 100);
 
     sl::RuntimeParameters runtimeParams;
     runtimeParams.sensing_mode = sl::SENSING_MODE::STANDARD;

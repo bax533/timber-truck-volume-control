@@ -1,3 +1,0 @@
-/home/szymon/inz/timber-truck-volume-control/CMakeFiles/rebuild_cache.dir
-/home/szymon/inz/timber-truck-volume-control/CMakeFiles/edit_cache.dir
-/home/szymon/inz/timber-truck-volume-control/CMakeFiles/Timber-Volume-Control.dir

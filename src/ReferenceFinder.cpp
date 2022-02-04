@@ -37,10 +37,8 @@ Area ReferenceFinder::FindTargets()
             double minval, maxval, threshold = 30;
             Point minloc, maxloc;
             minMaxLoc(res, &minval, &maxval, &minloc, &maxloc);
-            printf("%lf maxVal\n", maxval);
             if (maxval >= threshold)
             {
-                printf("^typu POG\n");
                 found_here_debug += 1;
                 //circle(res, maxloc, reference.cols/2, Scalar(0), FILLED); //mark drawn blob
                 
@@ -65,13 +63,6 @@ Area ReferenceFinder::FindTargets()
                 curRes.push_back(Point(maxloc.x + reference.cols/2, maxloc.y + reference.rows/2));
                 result.push_back(Point(maxloc.x + reference.cols/2, maxloc.y + reference.rows/2));
                 templates_found++;
-               
-               /* 
-                std::cout<<maxloc.x<<", "<<maxloc.y<<"  <- found here\n";                
-                imshow("?", source);
-                waitKey(0);
-                destroyWindow("?");
-                */
             }
             else
                 break;
@@ -101,10 +92,6 @@ Area ReferenceFinder::FindTargets()
         resize(reference, reference, Size(reference.cols - 1, reference.rows - 1));
     }
 
-    //assert(result.size() == 4);
-    //imshow("final", source);
-    //waitKey(0);
-    
     if(result.size() == 4)
     {
         std::cout<<"CORRECTLY FOUND 4 TARGETS\n";
